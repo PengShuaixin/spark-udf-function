@@ -30,7 +30,7 @@ object SparkFunnelTest {
     // 测试funnel函数
     val funnelCountDF = spark.sql(
       """
-        |SELECT funnel_sum(max_ordered_match_length, 1) AS conversion_link
+        |SELECT funnel_sum(max_ordered_match_length, 4) AS conversion_link
         |FROM (
         |SELECT uid,funnel_count(event_time, 10, event_id, '1,3,6,7') AS max_ordered_match_length
         |FROM test_tb

@@ -13,6 +13,10 @@ import scala.collection.mutable.ListBuffer
  * @author Niclas
  * @date 2021/3/25 14:15
  * @description
+ * 漏斗分析函数 FUNNEL_COUNT
+ *
+ * 语法：
+ * funnel_count(<事件发送时间戳(毫秒):bigint>, <事件窗口毫秒宽度:bigint>, <事件id:int/varchar>, <事件id列表:varchar>)
  *
  * - 过滤所有满足事件窗口宽度内的数据。
  * - 将过滤后的事件按时间戳排序，例如t1发送e1、t2发送e2、t3发送e1、t4发送e3。
@@ -21,9 +25,6 @@ import scala.collection.mutable.ListBuffer
  * 关心事件为e1，e2，e3，而用户数据为e2，e1，e3，最终匹配到e1，函数返回值为1。
  * 关心事件为e1，e2，e3，而用户数据为e4，e3，最终没有匹配到事件，函数返回值为0。
  *
- * 语法：
- *
- * funnel_count(<事件发送时间戳(毫秒):bigint>, <事件窗口毫秒宽度:bigint>, <事件id:int/varchar>, <事件id列表:varchar>)
  *
  * 示例数据：
  *
@@ -41,7 +42,8 @@ import scala.collection.mutable.ListBuffer
  * 示例SQL:
  * SELECT uid,
  * funnel_count(event_time, 10, event_id, '1,3,6,7') AS max_ordered_match_length
- * FROM test_tb GROUP BY uid
+ * FROM test_tb
+ * GROUP BY uid
  *
  * 示例返回值：
  *
@@ -59,7 +61,7 @@ import scala.collection.mutable.ListBuffer
  * -- 用户2，在时间点5触发了3号事件，与关心事件列表(1,3,6,7)相比，匹配了0个事件（因为第一个事件是1），所以函数返回值为0。
  * -- 用户4，在时间点1触发了1号事件，在时间点11触发了3号事件（这个事件超过窗口10，无效），与关心事件列表(1,3,6,7)相比，匹配(1） 一个事件，所以函数返回值为1。​
  *
- * 示例代码见：com.donews.SparkFunnelCountTest
+ * 示例代码见：com.donews.SparkFunnelTest
  *
  */
 class FunnelCountAggregationFunction extends UserDefinedAggregateFunction {
