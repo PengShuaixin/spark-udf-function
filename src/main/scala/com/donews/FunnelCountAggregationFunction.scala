@@ -1,11 +1,11 @@
 package com.donews
 
 import java.util
-
 import org.apache.spark.sql.Row
 import org.apache.spark.sql.expressions.{MutableAggregationBuffer, UserDefinedAggregateFunction}
 import org.apache.spark.sql.types.{DataType, DataTypes, StructField, StructType}
 
+import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
 /**
@@ -105,7 +105,7 @@ class FunnelCountAggregationFunction extends UserDefinedAggregateFunction {
 
   // 计算之前缓冲区的初始化
   override def initialize(buffer: MutableAggregationBuffer): Unit = {
-    buffer(2) = Map[Int, Byte]()
+    buffer(2) = new mutable.HashMap[Int, Byte]()
     // 默认值0
     buffer(3) = 0
   }
